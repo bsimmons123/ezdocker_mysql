@@ -15,8 +15,8 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-CREATE DATABASE  IF NOT EXISTS `jsptutorial` /*!40100 DEFAULT CHARACTER SET latin1 */;
-USE `jsptutorial`;
+CREATE DATABASE  IF NOT EXISTS `test` /*!40100 DEFAULT CHARACTER SET latin1 */;
+USE `test`;
 
 --
 -- Table structure for table `Product`
