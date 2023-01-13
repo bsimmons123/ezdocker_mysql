@@ -1,8 +1,10 @@
 @REM # (1) set up all the mysqldump variables
 ECHO off
-set time=%time:~0,2%_%time:~3,2%_%time:~6,2%
+set TIME=%time:~0,2%_%time:~3,2%_%time:~6,2%
+::trim left whitespace
+for /f "tokens=* delims= " %%a in ("%TIME%") do set TIME=%%a
 set DIR=backup/
-set SQLFILE=db_backup_dev_%time%.sql
+set SQLFILE=db_backup_dev_%TIME%.sql
 set SQLFILE_DIR=%DIR%%SQLFILE%
 set DATABASE=test
 set USER=root
