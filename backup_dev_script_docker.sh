@@ -1,7 +1,7 @@
 # (1) set up all the mysqldump variables
 DATE=`date +"%d_%b_%Y_%H%M"`
 DIR=backup/
-SQLFILE=db_backup_test_${DATE}.sql
+SQLFILE=db_backup_dev_${DATE}.sql
 SQLFILE_DIR=${DIR}${SQLFILE}
 DATABASE=test
 USER=root
@@ -21,10 +21,10 @@ printf "Database backup created at: ${SQLFILE_DIR}\n"
 #
 #############################
 
-printf "Adding (USE test) into ${SQLFILE_DIR}\n"
+printf "Adding (USE dev) into ${SQLFILE_DIR}\n"
 
-sed -i '1i USE `test`;' ${SQLFILE_DIR}
+sed -i '1i USE `dev`;' ${SQLFILE_DIR}
 
-printf "Adding (CREATE DATABASE  IF NOT EXISTS test) into ${SQLFILE_DIR}\n"
+printf "Adding (CREATE DATABASE  IF NOT EXISTS dev) into ${SQLFILE_DIR}\n"
 
-sed -i '1i CREATE DATABASE  IF NOT EXISTS `test`;' ${SQLFILE_DIR}
+sed -i '1i CREATE DATABASE  IF NOT EXISTS `dev`;' ${SQLFILE_DIR}
