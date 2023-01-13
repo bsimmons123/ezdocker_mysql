@@ -9,11 +9,14 @@ set SQLFILE_DIR=%DIR%%SQLFILE%
 set DATABASE=test
 set USER=root
 set DOCKER_CONTAINER_NAME=bsimmonsmysql
+set PASSWORD=password
 ECHO Loading...
 
 ECHO Reaching out to docker container: %DOCKER_CONTAINER_NAME%
 @REM # (3) do the mysql database backup (dump)
-docker exec -i %DOCKER_CONTAINER_NAME% mysqldump --defaults-extra-file=home/config/mysqlpass.cnf -u %USER% %DATABASE% > %SQLFILE_DIR%
+docker exec -i %DOCKER_CONTAINER_NAME% mysqldump -p%PASSWORD% -u %USER% %DATABASE% > %SQLFILE_DIR%
+
+ECHO Use: (--defaults-extra-file=home/config/mysqlpass.cnf) for better security
 
 ECHO Database backup finished
 ECHO Find your backup file at: %SQLFILE_DIR%
