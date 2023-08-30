@@ -12,9 +12,9 @@ if "%~1"=="" (
 
 rem Define variables
 set "backup_dir=backup"
-set "sql_file=db_backup_dev_%timestamp%.sql"
-set "sql_file_dir=%backup_dir%\%sql_file%"
 set "database=%~1"
+set "sql_file=db_backup_%database%_%timestamp%.sql"
+set "sql_file_dir=%backup_dir%\%sql_file%"
 set "user=root"
 set "docker_container_name=bsimmonsmysql"
 set "password=password"
@@ -28,21 +28,21 @@ docker exec -i %docker_container_name% mysqldump -p%password% -u %user% %databas
 
 echo Use: (--defaults-extra-file=home/config/mysqlpass.cnf) for better security
 
-echo Adding (USE `dev`) into %sql_file_dir%
+echo Adding (USE `%database%`) into %sql_file_dir%
 
 rem Create a temporary SQL script for modifications
 (
-    echo USE \`dev\`;
+    echo USE `%database%`;
     type "%sql_file_dir%"
 ) > temp.sql
 
 move /y temp.sql "%sql_file_dir%"
 
-echo Adding (CREATE DATABASE IF NOT EXISTS \`dev\`) into %sql_file_dir%
+echo Adding (CREATE DATABASE IF NOT EXISTS `%database%`) into %sql_file_dir%
 
 rem Create a temporary SQL script for modifications
 (
-    echo CREATE DATABASE IF NOT EXISTS \`dev\`;
+    echo CREATE DATABASE IF NOT EXISTS `%database%`;
     type "%sql_file_dir%"
 ) > temp.sql
 

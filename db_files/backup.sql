@@ -1,2 +1,2 @@
-CREATE DATABASE  IF NOT EXISTS `test`;
-USE `test`;
+CREATE DATABASE  IF NOT EXISTS `enter_db_here`;
+USE `enter_db_here`;

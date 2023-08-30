@@ -7,10 +7,10 @@ fi
 
 # (1) set up all the mysqldump variables
 DATE=`date +"%d_%b_%Y_%H%M"`
-DIR=backup/
-SQLFILE=db_backup_dev_${DATE}.sql
-SQLFILE_DIR=${DIR}${SQLFILE}
 DATABASE=$1
+DIR=backup/
+SQLFILE=db_backup_${DATABASE}_${DATE}.sql
+SQLFILE_DIR=${DIR}${SQLFILE}
 USER=root
 DOCKER_CONTAINER_NAME=bsimmonsmysql
 printf "Starting...\n"
@@ -28,10 +28,8 @@ printf "Database backup created at: ${SQLFILE_DIR}\n"
 #
 #############################
 
-printf "Adding (USE test) into ${SQLFILE_DIR}\n"
+printf "Adding (USE ${DATABASE}) into ${SQLFILE_DIR}\n"
+sed -i "1i USE \`${DATABASE}\`;" ${SQLFILE_DIR}
 
-sed -i '1i USE `test`;' ${SQLFILE_DIR}
-
-printf "Adding (CREATE DATABASE  IF NOT EXISTS test) into ${SQLFILE_DIR}\n"
-
-sed -i '1i CREATE DATABASE  IF NOT EXISTS `test`;' ${SQLFILE_DIR}
+printf "Adding (CREATE DATABASE IF NOT EXISTS ${DATABASE}) into ${SQLFILE_DIR}\n"
+sed -i "1i CREATE DATABASE IF NOT EXISTS \`${DATABASE}\`;" ${SQLFILE_DIR}
