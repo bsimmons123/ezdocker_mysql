@@ -1,40 +1,57 @@
-@REM # (1) set up all the mysqldump variables
-ECHO off
-set TIME=%time:~0,2%_%time:~3,2%_%time:~6,2%
-::trim left whitespace
-for /f "tokens=* delims= " %%a in ("%TIME%") do set TIME=%%a
-set DIR=backup/
-set SQLFILE=db_backup_dev_%TIME%.sql
-set SQLFILE_DIR=%DIR%%SQLFILE%
-set DATABASE=test
-set USER=root
-set DOCKER_CONTAINER_NAME=bsimmonsmysql
-set PASSWORD=password
-ECHO Loading...
+@echo off
+setlocal enabledelayedexpansion
 
-ECHO Reaching out to docker container: %DOCKER_CONTAINER_NAME%
-@REM # (3) do the mysql database backup (dump)
-docker exec -i %DOCKER_CONTAINER_NAME% mysqldump -p%PASSWORD% -u %USER% %DATABASE% > %SQLFILE_DIR%
+rem Set a custom variable for the timestamp
+for /f %%A in ('wmic OS Get localdatetime ^| find "."') do set "datetime=%%A"
+set "timestamp=%datetime:~0,4%%datetime:~4,2%%datetime:~6,2%_%datetime:~8,2%%datetime:~10,2%%datetime:~12,2%"
 
-ECHO Use: (--defaults-extra-file=home/config/mysqlpass.cnf) for better security
+if "%~1"=="" (
+    echo Database not specified. Usage: %~nx0 ^<db_name^>
+    exit /b 1
+)
 
-ECHO Database backup finished
-ECHO Find your backup file at: %SQLFILE_DIR%
+rem Define variables
+set "backup_dir=backup"
+set "sql_file=db_backup_dev_%timestamp%.sql"
+set "sql_file_dir=%backup_dir%\%sql_file%"
+set "database=%~1"
+set "user=root"
+set "docker_container_name=bsimmonsmysql"
+set "password=password"
 
-ECHO Adding (USE `dev`) into %SQLFILE_DIR%
+echo Loading...
 
-cd backup
-echo USE `dev`;>temp.txt
-type %SQLFILE%>>temp.txt
-del %SQLFILE%
-rename temp.txt %SQLFILE%
+echo Reaching out to docker container: %docker_container_name%
 
-ECHO Adding (CREATE DATABASE  IF NOT EXISTS `dev`) into %SQLFILE_DIR%
+rem Perform the MySQL database backup
+docker exec -i %docker_container_name% mysqldump -p%password% -u %user% %database% > "%sql_file_dir%"
 
+echo Use: (--defaults-extra-file=home/config/mysqlpass.cnf) for better security
 
-echo CREATE DATABASE  IF NOT EXISTS `dev`;>temp.txt
-type %SQLFILE%>>temp.txt
-del %SQLFILE%
-rename temp.txt %SQLFILE%
+echo Adding (USE `dev`) into %sql_file_dir%
 
-pause
+rem Create a temporary SQL script for modifications
+(
+    echo USE \`dev\`;
+    type "%sql_file_dir%"
+) > temp.sql
+
+move /y temp.sql "%sql_file_dir%"
+
+echo Adding (CREATE DATABASE IF NOT EXISTS \`dev\`) into %sql_file_dir%
+
+rem Create a temporary SQL script for modifications
+(
+    echo CREATE DATABASE IF NOT EXISTS \`dev\`;
+    type "%sql_file_dir%"
+) > temp.sql
+
+move /y temp.sql "%sql_file_dir%"
+
+echo Database backup finished
+echo Find your backup file at: %sql_file_dir%
+
+echo Process completed successfully.
+
+rem Return to the original directory
+cd ..

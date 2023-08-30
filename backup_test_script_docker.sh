@@ -1,9 +1,16 @@
+if [ -z "$1" ]; then
+    echo "Database not specified. Usage: $0 <db_name>"
+    exit
+else
+    echo "Database provided: $1"
+fi
+
 # (1) set up all the mysqldump variables
 DATE=`date +"%d_%b_%Y_%H%M"`
 DIR=backup/
-SQLFILE=db_backup_test_${DATE}.sql
+SQLFILE=db_backup_dev_${DATE}.sql
 SQLFILE_DIR=${DIR}${SQLFILE}
-DATABASE=test
+DATABASE=$1
 USER=root
 DOCKER_CONTAINER_NAME=bsimmonsmysql
 printf "Starting...\n"
