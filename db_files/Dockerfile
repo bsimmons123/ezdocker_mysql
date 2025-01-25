@@ -1,5 +1,5 @@
 #Create MySQL Image for JSP Tutorial Application
-FROM mysql
+FROM mysql:9.2.0-oraclelinux9
 MAINTAINER bsimmons
 
 ENV MYSQL_ROOT_PASSWORD password
